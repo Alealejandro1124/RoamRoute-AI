@@ -1,0 +1,33 @@
+{
+  "name": "roamroute-ai-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for RoamRoute AI, a travel assistant application.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "typescript": "^4.1.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.13.10",
+    "@types/react": "19.0.10",
+    "eslint": "^7.14.0",
+    "eslint-config-next": "latest"
+  },
+  "keywords": [
+    "travel",
+    "itinerary",
+    "AI",
+    "assistant"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

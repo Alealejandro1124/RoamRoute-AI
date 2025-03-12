@@ -1,0 +1,13 @@
+FastAPI
+uvicorn
+pydantic
+sqlalchemy
+psycopg2-binary
+python-dotenv
+requests
+tensorflow
+huggingface-hub
+passlib[bcrypt]
+PyJWT
+python-multipart
+python-dotenv
