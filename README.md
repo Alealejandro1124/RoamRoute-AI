@@ -2,6 +2,8 @@
 
 RoamRoute AI is a travel-assistant application designed to help users optimize their itineraries and discover local activities based on their preferences. The application leverages AI-driven suggestions to enhance the travel experience for frequent travelers, local adventurers, occasional vacationers, and digital nomads.
 
+*** This Project was created initially with CoPilot but would not run properly. I switched over to chatGPT o3-mini-high to complete the project. ***
+
 ## Key Features
 
 - **Unified Itinerary & Local Activity Optimization**: Users receive a single itinerary experience with AI-driven suggestions tailored to their schedule and preferences.
