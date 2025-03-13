@@ -1,3 +1,10 @@
+/**
+ * login.tsx
+ *
+ * Demonstrates a basic login form. On successful login,
+ * a token is stored in localStorage and the user is redirected to the homepage.
+ */
+
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { apiFetch } from './_app';
@@ -13,14 +20,12 @@ const Login = () => {
     setError('');
 
     try {
-      // In many FastAPI OAuth2 setups, the endpoint expects form data:
-      // 'grant_type=password', 'username=...', 'password=...'
+      // In many OAuth2 flows with FastAPI, we do form data with 'username' and 'password'
       const body = new URLSearchParams();
       body.append('grant_type', 'password');
       body.append('username', username);
       body.append('password', password);
 
-      // Override default JSON content-type for form data
       const response = await apiFetch('http://127.0.0.1:8000/token', {
         method: 'POST',
         headers: {
@@ -36,14 +41,14 @@ const Login = () => {
       }
 
       const data = await response.json();
-      // data should look like: { access_token: '...', token_type: 'bearer' }
+      // e.g., { access_token: '...', token_type: 'bearer' }
 
-      // Store the token in localStorage
+      // Store the token
       if (typeof window !== 'undefined') {
         localStorage.setItem('access_token', data.access_token);
       }
 
-      // Redirect to the main page upon successful login
+      // Redirect to main page
       router.push('/');
     } catch (err) {
       console.error(err);
@@ -65,6 +70,7 @@ const Login = () => {
             required
           />
         </div>
+
         <div>
           <label htmlFor="password">Password:</label>
           <input
@@ -75,6 +81,7 @@ const Login = () => {
             required
           />
         </div>
+
         {error && <p className="error">{error}</p>}
         <button type="submit">Login</button>
       </form>

@@ -1,3 +1,11 @@
+/**
+ * _app.tsx
+ *
+ * The custom App component for Next.js, used to initialize pages.
+ * Also defines a reusable fetch utility (`apiFetch`) that automatically
+ * attaches a JWT token if present in localStorage.
+ */
+
 import { AppProps } from 'next/app';
 import '../styles/globals.css';
 
@@ -8,7 +16,7 @@ export async function apiFetch(url: string, options: RequestInit = {}) {
 
   // Merge default headers with any passed-in headers
   const headers: Record<string, string> = {
-    ...options.headers as Record<string, string>, // preserve any custom headers
+    ...(options.headers as Record<string, string>),
   };
 
   // If no Content-Type is specified, default to JSON
@@ -31,6 +39,9 @@ export async function apiFetch(url: string, options: RequestInit = {}) {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
+  /**
+   * Renders the main Next.js component (pages) with any global props.
+   */
   return <Component {...pageProps} />;
 }
 

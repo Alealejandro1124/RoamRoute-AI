@@ -1,7 +1,18 @@
+/**
+ * index.tsx
+ *
+ * The main landing page of the application. Fetches an itinerary from the backend
+ * (with user_id=1) and displays it. Allows thumbs-up/down feedback, which calls
+ * the backend for logging, then applies a local dictionary-based replacement for
+ * thumbs-down to immediately update the UI.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { apiFetch } from './_app';
 
-// 1) Full dictionary from your itinerary.py, stored locally
+// Local dictionary of suggestions for demonstration
+// (Mirrors the data from the backend's itinerary.py).
+// [Truncated here for brevity]
 const localSuggestions = {
   "Breakfast": [
     { time: "7-8am", activity: "Breakfast", suggestion: "Try avocado toast with fresh juice at The Green Table.", location: "Uptown" },
@@ -91,39 +102,36 @@ type ItineraryType = {
 };
 
 const Home = () => {
-  // Hardcode username for the demo (or parse from token)
+  // Example: Hard-coded username, or parse from token
   const userName = "Alejandro";
 
-  // Use state for dayPart, date, time to avoid SSR mismatch
+  // State for greeting
   const [dayPart, setDayPart] = useState<string | null>(null);
   const [estDate, setEstDate] = useState<string | null>(null);
   const [estTime, setEstTime] = useState<string | null>(null);
 
-  // Hardcode location for demo
+  // Hardcode location for demonstration
   const [location] = useState("Charlotte, NC");
 
+  // State for itinerary
   const [itinerary, setItinerary] = useState<ItineraryType | null>(null);
   const [feedbackMsg, setFeedbackMsg] = useState("");
 
-  // On mount, compute dayPart, date/time client-side, then fetch itinerary
   useEffect(() => {
-    // 1) Compute day part
+    // 1) Determine day part (morning, afternoon, evening)
     const hour = new Date().getHours();
     let dp = "Morning";
-    if (hour >= 12 && hour < 18) {
-      dp = "Afternoon";
-    } else if (hour >= 18 || hour < 5) {
-      dp = "Evening";
-    }
+    if (hour >= 12 && hour < 18) dp = "Afternoon";
+    else if (hour >= 18 || hour < 5) dp = "Evening";
     setDayPart(dp);
 
-    // 2) EST date/time
+    // 2) Retrieve date/time in EST
     const dateString = new Date().toLocaleDateString("en-US", { timeZone: "America/New_York" });
     const timeString = new Date().toLocaleTimeString("en-US", { timeZone: "America/New_York" });
     setEstDate(dateString);
     setEstTime(timeString);
 
-    // 3) Fetch itinerary
+    // 3) Fetch itinerary from server for user_id=1
     fetchItineraryFromServer();
   }, []);
 
@@ -138,12 +146,16 @@ const Home = () => {
     }
   };
 
-  // Local function to pick a new random suggestion for thumbs down
+  /**
+   * pickNewLocalSuggestion
+   *
+   * Chooses a random new suggestion from local dictionary data
+   * for a given activity, filtering out the current suggestion.
+   */
   const pickNewLocalSuggestion = (activity: string, oldSuggestion: string): ScheduleItem | null => {
     const possible = (localSuggestions as any)[activity];
     if (!possible) return null;
 
-    // Filter out the current suggestion so we don't pick the same one
     const filtered = possible.filter((item: ScheduleItem) => item.suggestion !== oldSuggestion);
     if (filtered.length === 0) return null;
 
@@ -151,16 +163,20 @@ const Home = () => {
     return filtered[randomIndex];
   };
 
+  /**
+   * handleActivityFeedback
+   *
+   * Called when user clicks thumbs up/down for a schedule item.
+   * Sends feedback to the backend, updates local UI if thumbs down.
+   */
   const handleActivityFeedback = async (index: number, feedback: string) => {
     if (!itinerary) return;
-
     const currentItem = itinerary.schedule[index];
     if (!currentItem) return;
 
     try {
-      // rating=2 for thumbs up, rating=1 for thumbs down
+      // rating=2 => thumbs up, rating=1 => thumbs down
       const rating = feedback === "👍" ? 2 : 1;
-      // Call server for analytics & official message
       const resp = await apiFetch("http://127.0.0.1:8000/itinerary/1/feedback", {
         method: "POST",
         body: JSON.stringify({
@@ -174,11 +190,10 @@ const Home = () => {
         return;
       }
 
-      const serverData = await resp.json();
-      // e.g., { message: "...", updated_activity?: {...} }
+      const serverData = await resp.json(); // e.g. { message: "...", updated_activity?: {...} }
       setFeedbackMsg(serverData.message);
 
-      // If thumbs down, do local replacement for instant UI update
+      // If thumbs down, pick a new local suggestion
       if (rating === 1) {
         const newLocalSuggestion = pickNewLocalSuggestion(currentItem.activity, currentItem.suggestion);
         if (newLocalSuggestion) {
@@ -195,7 +210,7 @@ const Home = () => {
     }
   };
 
-  // If dayPart or estDate/time not set yet, or no itinerary loaded, we can show a brief loading
+  // Simple loading screen if data not ready
   if (!dayPart || !estDate || !estTime || !itinerary) {
     return <p style={{ padding: "2rem" }}>Loading your itinerary...</p>;
   }
