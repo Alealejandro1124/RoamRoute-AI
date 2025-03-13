@@ -1,31 +1,44 @@
+"""
+utils.py
+
+Provides utility functions for password hashing/verification
+and JWT creation (for authentication).
+"""
+
 import os
 import jwt
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 
-# Set up password hashing with bcrypt
+# Password hashing context (bcrypt)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Load SECRET_KEY from the environment or use a default for development
+# Load SECRET_KEY from environment or fallback
 SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key_here")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 def hash_password(password: str) -> str:
     """
-    Hash the provided plain-text password using bcrypt.
+    Hashes a plain-text password using bcrypt via passlib.
+    Returns the hashed password as a string.
     """
     return pwd_context.hash(password)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
-    Verify that the plain-text password matches the hashed password.
+    Verifies that a plain-text password matches the hashed password
+    using bcrypt comparison.
     """
     return pwd_context.verify(plain_password, hashed_password)
 
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     """
-    Create a JWT access token with an expiration.
+    Creates a JWT access token containing the provided data.
+    If expires_delta is provided, it sets an expiration; otherwise uses a default
+    of ACCESS_TOKEN_EXPIRE_MINUTES.
+
+    Returns the encoded JWT as a string.
     """
     to_encode = data.copy()
     if expires_delta:
