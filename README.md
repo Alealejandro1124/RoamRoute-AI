@@ -70,10 +70,11 @@ Below are instructions for a **fresh setup** if you have **no** Python venv or N
    ```
 
 4. **Configure Environment Variables**
+   ```
    - Create a `.env` file in the `backend` directory and add your database connection details and any other necessary environment variables.
 
    ** A .env file has been included for demo purposes **
-
+   ```
 
 5. **Run the Backend Server**
    ```
@@ -96,13 +97,14 @@ Below are instructions for a **fresh setup** if you have **no** Python venv or N
    ```
 
 7. **Access the Application**
+   ```
    Open your browser and navigate to `http://localhost:3000` to access the RoamRoute AI application.
 
    you should see "Loading your itinerary..."
    This is correct
-
+   ```
 8. **Create an itinerary in Backend**
-
+   ```
    Open you browser and navigate to http://localhost:8000/docs#/
 
    1. Locate: /itinerary/{user_id}
@@ -110,9 +112,10 @@ Below are instructions for a **fresh setup** if you have **no** Python venv or N
    3. Enter 1 in the user_id field
    4. Press Execute
       In responspe body you should see an itinerary created.
-
+   ```
 9. **Refresh your Application Window**
-   access your http://localhost:3000` window/tab and refresh
+   ```
+   Access your http://localhost:3000` window/tab and refresh
 
    You should now see a very basic itiration of RoamRoute AI
 
@@ -122,7 +125,7 @@ Below are instructions for a **fresh setup** if you have **no** Python venv or N
 
    Activities are hard coded for demo purposes as live location
    has not been inigrated.
-   
+   ```
 
 ## Known Limitations
 
